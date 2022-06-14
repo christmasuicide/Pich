@@ -8,3 +8,17 @@
 3. Обрати товар та ознайомитись з його описом, наприклад-
 складники
 4. Оперувати з кошиком(додавати/видаляти продукцію)
+
+# Встановлення
+**Умови:** [Java 11](https://www.oracle.com/cis/java/technologies/javase/jdk11-archive-downloads.html)
+
+Щоб встановити застосунок, виконайте наступні команди
+```bash
+git clone https://github.com/sashazvych/Pich
+cd Pich
+```
+Щоб запустити застосунок, виконайте
+```bash
+mvnw spring-boot:run
+```
+Або імпортуйте репозиторій до IDE
