@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Catalogue</title>
+</head>
+<body>
+<h1>Pich Application</h1>
+<div>
+    <input type="radio" id="all_type" value="0" name="type" class="type-radio" checked/>
+    <label for="all_type">ALL</label>
+    <input type="radio" id="bread_type" value="1" name="type" class="type-radio"/>
+    <label for="bread_type">BREAD</label>
+    <input type="radio" id="pastry_type" value="2" name="type" class="type-radio"/>
+    <label for="pastry_type">PASTRY</label>
+</div>
+<div>
+    <input type="radio" id="all_advanced" value="0" name="advanced" class="advanced-radio" checked/>
+    <label for="all_type">all</label>
+    <input type="radio" id="gluten_free_type" value="1" name="advanced" class="advanced-radio"/>
+    <label for="gluten_free_type">gluten free</label>
+    <input type="radio" id="lactose_free_type" value="2" name="advanced" class="advanced-radio"/>
+    <label for="lactose_free_type">lactose free</label>
+</div>
+<div id="products_list">
+    <div th:each="product: ${products}">
+        <p th:text="${product.title}"></p>
+        <p th:text="${product.description}"></p>
+        <img th:src="${product.imageURL}" style="height: 400px; width: 400px; object-fit: cover;"/>
+        <p th:text="${product.price}"></p>
+        <a th:href="@{/product/{id}(id=${product.id})}">Details</a>
+    </div>
+</div>
+</body>
+<script>
+    let typeIndex = 0;
+    let advancedIndex = 0;
+
+    async function updateCatalogue() {
+        fetch('/products/get?' + new URLSearchParams({
+            type: typeIndex,
+            advanced: advancedIndex,
+        }))
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById("products_list");
+                container.innerHTML = "";
+                for (const product of data) {
+                    container.innerHTML += '<div>';
+                    container.innerHTML += `<p>${product.title}</p>`;
+                    container.innerHTML += `<p>${product.description}</p>`;
+                    container.innerHTML += `<img src="${product.imageURL}" style="height: 400px; width: 400px; object-fit: cover;"/>`;
+                    container.innerHTML += `<p>${product.price}</p>`;
+                    container.innerHTML += `<a href="/product/${product.id}">Details</a>`;
+                    container.innerHTML += '</div>';
+                }
+            })
+            .catch(console.error);
+    }
+
+    for (const el of document.getElementsByClassName("type-radio")) {
+        el.onclick = (e) => {
+            typeIndex = e.target.value;
+            updateCatalogue();
+        }
+    }
+    for (const el of document.getElementsByClassName("advanced-radio")) {
+        el.onclick = (e) => {
+            advancedIndex = e.target.value;
+            updateCatalogue();
+        }
+    }
+</script>
+</html>

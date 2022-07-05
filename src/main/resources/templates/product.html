@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title th:text="${product.title}"></title>
+</head>
+<body>
+<h1>Pich Application</h1>
+<div>
+    <p th:text="'Title: ' + ${product.title}"></p>
+    <p th:text="'Description: ' + ${product.description}"></p>
+    <p th:text="'Contents: ' + ${product.ingredients}"></p>
+    <p th:text="${product.allergens != null} ? 'Allergens: ' + ${product.allergens} : 'No allergens'"></p>
+    <p th:text="'Weight: ' + ${product.weight} + 'g'"></p>
+    <img th:src="@{/{url}(url=${product.imageURL})}" style="height: 400px; width: 400px; object-fit: cover;"/>
+    <p th:text="'$' + ${product.price}"></p>
+    <div th:if="${product.gluten_free}">gluten free</div>
+    <div th:if="${product.lactose_free}">lactose free</div>
+    <a th:href="@{/cart/add/{id}(id=${product.id})}">+</a>
+    <a th:href="@{/cart/decrease/{id}(id=${product.id})}">-</a>
+    <a th:href="@{/cart/remove/{id}(id=${product.id})}">x</a>
+</div>
+</body>
+</html>

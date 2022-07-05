@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Cart</title>
+</head>
+<body>
+<h1>Pich Application</h1>
+<div th:each="basketItem: ${baskets}">
+    <p th:text="'Title: ' + ${basketItem.product.title}"></p>
+    <p th:text="'Quantity: ' + ${basketItem.quantity}"></p>
+</div>
+<a href="/cart/clear">Clear Cart</a>
+</body>
+</html>
