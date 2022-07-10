@@ -2,10 +2,14 @@ package com.kma.pich.controller;
 
 import com.kma.pich.config.MyPasswordEncoder;
 import com.kma.pich.db.entity.BasketEntity;
+import com.kma.pich.db.entity.OrderEntity;
 import com.kma.pich.db.entity.ProductEntity;
 import com.kma.pich.db.entity.UserEntity;
+import com.kma.pich.db.service.BasketService;
+import com.kma.pich.db.service.OrderService;
 import com.kma.pich.db.service.ProductService;
 import com.kma.pich.db.service.UserService;
+import com.kma.pich.dto.OrderDto;
 import com.kma.pich.dto.ProductCatalogueDto;
 import com.kma.pich.dto.ProductDto;
 import com.kma.pich.dto.UserDto;
@@ -27,15 +31,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.criteria.Order;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.validation.*;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -44,6 +47,8 @@ public class PichController {
 
     private final ProductService productService;
     private final UserService userService;
+    private final OrderService orderService;
+    private final BasketService basketService;
     private final HttpServletRequest servletRequest;
     private final MyPasswordEncoder myPasswordEncoder;
 
@@ -76,7 +81,8 @@ public class PichController {
         if (principal != null) {
             String username = principal.getName();
             Optional<UserEntity> myUser = userService.getUserByUsername(username);
-            if (myUser.isEmpty()) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sign in for adding to cart");
+            if (myUser.isEmpty())
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sign in for adding to cart");
             UserEntity user = myUser.get();
             List<BasketEntity> basketEntities = user.getBaskets();
             model.addAttribute("baskets", basketEntities);
@@ -141,7 +147,7 @@ public class PichController {
             @RequestParam(name = "lactose_free", required = false, defaultValue = "false") Boolean lactose_free,
             @RequestParam(name = "image") MultipartFile image
     ) throws IOException {
-        if(type < 0 || type >= ProductType.values().length) {
+        if (type < 0 || type >= ProductType.values().length) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid query parameters");
         }
         ProductEntity productEntity = new ProductEntity();
@@ -169,6 +175,48 @@ public class PichController {
         return "redirect:/product/" + productId;
     }
 
+    @RequestMapping(value = "/create-order", method = RequestMethod.GET)
+    public String createOrder(Principal principal) {
+        if (!isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sign in for adding to cart");
+        }
+        if (principal != null) {
+            String username = principal.getName();
+            Optional<UserEntity> myUser = userService.getUserByUsername(username);
+            if (myUser.isEmpty())
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sign in for adding to cart");
+            UserEntity user = myUser.get();
+            if (user.getBaskets().isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cart is empty");
+            }
+            OrderEntity orderEntity = new OrderEntity();
+            orderEntity.setLogin(user.getLogin());
+            orderEntity.setOrderDate(new Date());
+            StringBuilder orderListBuilder = new StringBuilder();
+            double sum = 0.0;
+            for (BasketEntity basketEntity : user.getBaskets()) {
+                orderListBuilder.append(basketEntity.getProduct().getTitle()).append(" - ").append(basketEntity.getQuantity()).append("x\n");
+                sum += basketEntity.getProduct().getPrice() * basketEntity.getQuantity();
+            }
+            orderEntity.setOrderList(orderListBuilder.toString());
+            orderEntity.setOrderCost(sum);
+            orderService.createOrder(orderEntity);
+            basketService.clearBasketByUser(user);
+            System.out.println("Total order price: " + sum);
+            return "successful_order";
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sign in for adding to cart");
+    }
+
+    @RequestMapping(value = "/orders", method = RequestMethod.GET)
+    public String createOrder(final Model model) {
+        List<OrderDto> orders = orderService.getAllOrders()
+                .stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
+        model.addAttribute("orders", orders);
+        return "order_list";
+    }
 
     private boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -21,6 +21,15 @@ create table users
     unique uniq_login (login)
 );
 
+create table orders
+(
+    id         int primary key auto_increment,
+    order_date datetime not null,
+    login      varchar(40) not null,
+    order_list text not null,
+    order_cost decimal(19,4) not null
+);
+
 create table permissions
 (
     id         int primary key auto_increment,
@@ -45,12 +54,5 @@ create table user_to_products
     constraint fk_user_to_product_id foreign key (product_id) references catalogue (id)
 );
 
-insert into users (login, password)
-values ('admin', '5F4DCC3B5AA765D61D8327DEB882CF99'),
-       ('user', '5F4DCC3B5AA765D61D8327DEB882CF99');
-
 insert into permissions (permission)
 values ('ADMIN');
-
-insert into user_to_permissions (user_id, permission_id)
-values ((select id from users where login = 'admin'), (select id from permissions where permission = 'ADMIN'));

@@ -66,4 +66,10 @@ public class BasketService {
         basketRepository.deleteBasketEntitiesByUser(user);
     }
 
+    @Transactional
+    public void removeProductFromBaskets(ProductEntity productEntity) {
+        basketRepository.deleteAllByProduct(productEntity);
+    }
+
+
 }

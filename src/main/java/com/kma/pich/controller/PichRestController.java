@@ -155,6 +155,21 @@ public class PichRestController {
                 .body(products);
     }
 
+    @GetMapping("/products/remove/{id}")
+    public ResponseEntity<String> removeProduct(@PathVariable(value = "id") Integer id, Principal principal) {
+        ProductEntity product = productService.getProductById(id);
+
+        if (product == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find product");
+        }
+
+        basketService.removeProductFromBaskets(product);
+        productService.removeProduct(product);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
+
     private boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || AnonymousAuthenticationToken.class.

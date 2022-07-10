@@ -25,11 +25,27 @@ public class UserService {
     }
 
     @Transactional
+    public UserEntity saveUser(UserEntity userEntity) {
+        if (userEntity.getPermissions() == null) {
+            userEntity.setPermissions(new ArrayList<>());
+        }
+        if (userEntity.getBaskets() == null) {
+            userEntity.setBaskets(new ArrayList<>());
+        }
+        return userRepository.saveAndFlush(userEntity);
+    }
+
+    @Transactional
     public UserEntity getUserById(Integer id) {
         Optional<UserEntity> optionalUser = userRepository.findById(id);
 
         return optionalUser
                 .orElse(null);
+    }
+
+    @Transactional
+    public boolean isUserExistsByLogin(String login) {
+        return userRepository.existsByLogin(login);
     }
 
     @Transactional

@@ -28,13 +28,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/")
                 .and()
                 .authorizeRequests()
-                    .antMatchers("/products/add").hasAuthority(Permission.ADMIN.name())
+                    .antMatchers("/products/add",
+                            "/products/remove/**",
+                            "/orders"
+                    ).hasAuthority(Permission.ADMIN.name())
                     .antMatchers("/cart",
                             "/cart/**",
                             "/catalogue",
                             "/product/**",
                             "/products/**",
-                            "/products-image/**"
+                            "/products-image/**",
+                            "/create-order"
                     ).authenticated()
                 .anyRequest().permitAll();
     }

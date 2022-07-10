@@ -6,6 +6,9 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +37,16 @@ public class ProductService {
     @Transactional
     public List<ProductEntity> getMatchingProducts(ProductEntity productEntity) {
         return productRepository.findAll(Example.of(productEntity));
+    }
+
+    @Transactional
+    public void removeProduct(ProductEntity productEntity) {
+        try {
+            Files.deleteIfExists(Path.of(productEntity.getImageURL()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        productRepository.delete(productEntity);
     }
 
 }
