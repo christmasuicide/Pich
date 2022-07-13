@@ -1,24 +1,72 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${product.title}"></title>
+    <link rel="stylesheet" href="/css/product.css">
 </head>
 <body>
-<h1>Pich Application</h1>
-<div>
-    <p th:text="'Title: ' + ${product.title}"></p>
-    <p th:text="'Description: ' + ${product.description}"></p>
-    <p th:text="'Contents: ' + ${product.ingredients}"></p>
-    <p th:text="${product.allergens != null} ? 'Allergens: ' + ${product.allergens} : 'No allergens'"></p>
-    <p th:text="'Weight: ' + ${product.weight} + 'g'"></p>
-    <img th:src="@{/{url}(url=${product.imageURL})}" style="height: 400px; width: 400px; object-fit: cover;"/>
-    <p th:text="'$' + ${product.price}"></p>
-    <div th:if="${product.gluten_free}">gluten free</div>
-    <div th:if="${product.lactose_free}">lactose free</div>
-    <a th:href="@{/cart/add/{id}(id=${product.id})}">+</a>
-    <a th:href="@{/cart/decrease/{id}(id=${product.id})}">-</a>
-    <a th:href="@{/cart/remove/{id}(id=${product.id})}">x</a>
+<header class="header">
+    <a href="/" class="logo">Pich</a>
+    <input class="side-menu" type="checkbox" id="side-menu"/>
+    <label class="hamb" for="side-menu"><span class="hamb-line"></span></label>
+    <nav class="nav">
+        <ul class="menu">
+            <li th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}"><a href="/admin">Admin Tools</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/logout">Sign out</a></li>
+        </ul>
+    </nav>
+</header>
+<div class="product-top-panel">
+    <a href="/catalogue">
+        <div class="arrow-back"><img src="/img/arrow.png"></div>
+    </a>
+    <div th:text="${product.title}" class="product-title"></div>
+</div>
+<div class="detail-product-info" id="product-info" th:attr="data-id=${product.id}">
+    <div class="info-photo"><img th:src="@{/{url}(url=${product.imageURL})}"></div>
+    <div class="info-text">
+        <div th:text="'“' + ${product.description} + '“'" class="info-description"></div>
+        <div class="table-info">
+            <table>
+                <tr>
+                    <td class="top-left-cell">WEIGHT</td>
+                    <td th:text="${product.weight} + 'g'" class="top-right-cell"></td>
+                </tr>
+                <tr>
+                    <td>CONTENTS</td>
+                    <td th:text="${product.ingredients}"></td>
+                </tr>
+                <tr>
+                    <td class="bot-left-cell">POSSIBLE ALLERGIES</td>
+                    <td th:text="${product.allergens != null} ? ${product.allergens} : 'absent'"
+                        class="bot-right-cell"></td>
+                </tr>
+            </table>
+        </div>
+        <div th:if="${product.gluten_free} or ${product.lactose_free}" class="gluten-lactose-info">
+            <div th:if="${product.gluten_free}" class="gluten-info">gluten free</div>
+            <div th:if="${product.lactose_free}" class="lactose-info">lactose free</div>
+        </div>
+        <div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="admin-product-panel">
+            <button class="del-button" id="delete-product">Delete product</button>
+        </div>
+    </div>
+</div>
+<div class="bottom-cart-panel">
+    <div th:text="'$' + ${product.price}" th:attr="data-price=${product.price}" class="price-current-product"
+         id="price"></div>
+    <div class="add-to-cart">
+        <div class="quantity-to-cart">
+            <button id="decrease-button" th:disabled="${quantity} == 0">-</button>
+            <input id="product-quantity" type="number" th:value="${quantity}" min="0" max="100" disabled>
+            <button id="increase-button">+</button>
+        </div>
+    </div>
+    <div class="cart-total-price" id="current-cost" th:text="'$' + ${cost}" style="text-align: right"></div>
 </div>
 </body>
+<script src="/js/product.js"></script>
 </html>

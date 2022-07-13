@@ -2,11 +2,16 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Pich</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/start_page.css">
+    <title>Welcome to Pich Bakery</title>
 </head>
-<body>
-<h1>Pich Application</h1>
-<a href="/login" th:if="${#authorization.expression('isAnonymous()')}">Get started</a>
-<a href="/catalogue" th:if="${#authorization.expression('isFullyAuthenticated()')}">Go to catalogue</a>
-</body>
-</html>
+<body class="customBackground">
+<div class="main-big-block-bg">
+    <div class="logo-1">
+    </div>
+    <div class="main-1" th:switch="${#authorization.expression('isFullyAuthenticated()')}">
+        <a th:case="false" href="/login" id="start-button-1">GET STARTED</a>
+        <a th:case="true" href="/catalogue" id="start-button-1">GO TO CATALOGUE</a>
+    </div>
+</div>

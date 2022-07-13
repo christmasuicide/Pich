@@ -1,38 +1,95 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Add Product</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add product</title>
+    <link rel="stylesheet" href="/css/add_product.css">
 </head>
 <body>
-<div>
-    <form th:action="@{/products/add}" method="post" enctype="multipart/form-data">
-        <label for="title">Title</label>
-        <input type="text" id="title" name="title" maxlength="60" required/>
-        <label for="description">Description</label>
-        <input type="text" id="description" name="description" maxlength="80" required/>
-        <label for="type">Type</label>
-        <select name="type" id="type" required>
-            <option value="0">Bread</option>
-            <option value="1">Pastry</option>
-        </select>
-        <label for="price">Price</label>
-        <input type="number" id="price" name="price" min="0.00" max="10000.00" step="0.01" required/>
-        <label for="ingredients">Contents</label>
-        <input type="text" id="ingredients" name="ingredients" maxlength="120" required/>
-        <label for="allergens">Allergens</label>
-        <input type="text" id="allergens" name="allergens" maxlength="120"/>
-        <label for="weight">Weight</label>
-        <input type="number" id="weight" name="weight" max="10000" min="10" required/>
-        <label for="gluten_free">Gluten Free</label>
-        <input type="checkbox" id="gluten_free" name="gluten_free"/>
-        <label for="lactose_free">Lactose Free</label>
-        <input type="checkbox" id="lactose_free" name="lactose_free"/>
-        <label for="image">Image</label>
-        <input type="file" id="image" name="image" accept="image/png, image/jpeg" required/>
-        <div class="form-actions">
-            <button type="submit" class="btn">Add</button>
-        </div>
+<header class="header">
+    <a href="/" class="logo">Pich</a>
+    <input class="side-menu" type="checkbox" id="side-menu"/>
+    <label class="hamb" for="side-menu"><span class="hamb-line"></span></label>
+    <nav class="nav">
+        <ul class="menu">
+            <li><a href="/catalogue">Catalogue</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/logout">Sign out</a></li>
+        </ul>
+    </nav>
+</header>
+<div class="product-top-panel">
+    <a href="/admin">
+        <div class="arrow-back"><img src="/img/arrow.png"></div>
+    </a>
+    <div class="product-title">Add product</div>
+</div>
+<div class="main-add-product-form">
+    <form action="/products/add" method="post" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td><label for="title">Title</label></td>
+                <td><input type="text" id="title" name="title" maxlength="60" required/></td>
+            </tr>
+            <tr>
+                <td><label for="description">Description</label></td>
+                <td><input type="text" id="description" name="description" maxlength="80" required/></td>
+            </tr>
+            <tr>
+                <td><label for="type">Type</label></td>
+                <td><select name="type" id="type" required>
+                    <option value="0">Bread</option>
+                    <option value="1">Pastry</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td><label for="price">Price</label></td>
+                <td><input type="number" id="price" name="price" min="0.00" max="10000.00" step="0.01" required/></td>
+            </tr>
+            <tr>
+                <td><label for="ingredients">Contents</label></td>
+                <td><input type="text" id="ingredients" name="ingredients" maxlength="120" required/></td>
+            </tr>
+            <tr>
+                <td><label for="allergens">Allergens</label></td>
+                <td><input type="text" id="allergens" name="allergens" maxlength="120"/></td>
+            </tr>
+            <tr>
+                <td><label for="weight">Weight</label></td>
+                <td><input type="number" id="weight" name="weight" max="10000" min="10" required/></td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="checkboxes" for="gluten_free">Gluten Free
+                        <input type="checkbox" id="gluten_free" name="gluten_free"/>
+                        <span class="checkmark"></span>
+                    </label>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="checkboxes" for="lactose_free">Lactose Free
+                        <input type="checkbox" id="lactose_free" name="lactose_free"/>
+                        <span class="checkmark"></span>
+                    </label>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label for="image">Image</label></td>
+                <td><input class="file-input-add-photo" type="file" id="image" name="image"
+                           accept="image/png, image/jpeg" required/></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="form-actions">
+                        <button type="submit" class="btn">Add</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </form>
 </div>
 </body>

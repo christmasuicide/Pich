@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+body {
+    background: #F8F8FC;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.logo2 {
+	margin-top: 70px;
+	text-align: center;
+	background-image: url('../img/logo2.png');
+	min-width: 250px;
+	min-height: 250px;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.form1 {
+	min-width: 300px;
+	width: 340px;
+	margin: 0 auto;
+}
+
+.form1 input {
+    width: 100%;
+	padding-left: 10px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    box-shadow: inset 0px 2px 3px rgba(0, 0, 0, 0.06);
+    height: 36px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.form1 button {
+    background: #F1CDB0;
+    box-shadow: 0px 1px 7px rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    width: 100%;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #3A3844;
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.form1 button:hover, .form1 button:focus {
+	cursor: pointer;
+	background-color: #e8ba95;
+}
+
+.error-message {
+    width: 100%;
+    background-color: #ffe6e6;
+    border-radius: 6px;
+    color: red;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-weight: 300;
+    box-sizing: border-box;
+}
+
+.success-message{
+    width: 100%;
+    background-color: #DCFFD1;
+    border-radius: 6px;
+    color: green;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-weight: 300;
+    box-sizing: border-box;
+}
+
+input[type='password'] {
+	font-family: Verdana, sans-serif;
+	letter-spacing: 0.125em;
+}
+
+input[type='password']::placeholder {
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: normal;
+}
+
+.text-tip-form {
+    margin-bottom: 5px;
+    margin-top: 15px;
+    text-decoration: none;
+}
+
+.text-tip-form:last-child {
+    text-align: center;
+}
+
+.text-tip-form a {
+    text-decoration: none;
+    font-weight: 700;
+    color: black;
+
+}
+
+.form1 button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

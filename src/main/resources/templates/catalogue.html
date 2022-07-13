@@ -1,74 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalogue</title>
+    <link rel="stylesheet" href="/css/catalogue.css">
 </head>
 <body>
-<h1>Pich Application</h1>
+<header class="header">
+    <a href="/" class="logo">Pich</a>
+    <input class="side-menu" type="checkbox" id="side-menu"/>
+    <label class="hamb" for="side-menu"><span class="hamb-line"></span></label>
+    <nav class="nav">
+        <ul class="menu">
+            <li th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}"><a href="/admin">Admin Tools</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/logout">Sign out</a></li>
+        </ul>
+    </nav>
+</header>
 <div>
-    <input type="radio" id="all_type" value="0" name="type" class="type-radio" checked/>
-    <label for="all_type">ALL</label>
-    <input type="radio" id="bread_type" value="1" name="type" class="type-radio"/>
-    <label for="bread_type">BREAD</label>
-    <input type="radio" id="pastry_type" value="2" name="type" class="type-radio"/>
-    <label for="pastry_type">PASTRY</label>
-</div>
-<div>
-    <input type="radio" id="all_advanced" value="0" name="advanced" class="advanced-radio" checked/>
-    <label for="all_type">all</label>
-    <input type="radio" id="gluten_free_type" value="1" name="advanced" class="advanced-radio"/>
-    <label for="gluten_free_type">gluten free</label>
-    <input type="radio" id="lactose_free_type" value="2" name="advanced" class="advanced-radio"/>
-    <label for="lactose_free_type">lactose free</label>
-</div>
-<div id="products_list">
-    <div th:each="product: ${products}">
-        <p th:text="${product.title}"></p>
-        <p th:text="${product.description}"></p>
-        <img th:src="${product.imageURL}" style="height: 400px; width: 400px; object-fit: cover;"/>
-        <p th:text="${product.price}"></p>
-        <a th:href="@{/product/{id}(id=${product.id})}">Details</a>
+    <div class="categories">
+        <span onclick="changeType(this, 0)" class="selected">ALL</span>
+        <span onclick="changeType(this, 1)">BREAD</span>
+        <span onclick="changeType(this, 2)">PASTRY</span>
+    </div>
+    <div class="subcategories">
+        <div onclick="changeAdvanced(this, 0)" class="selected">all</div>
+        <div onclick="changeAdvanced(this, 1)">lactose free</div>
+        <div onclick="changeAdvanced(this, 2)">gluten free</div>
     </div>
 </div>
+<div class="products" id="products-list">
+</div>
+</div>
+<div id="overlay"></div>
 </body>
-<script>
-    let typeIndex = 0;
-    let advancedIndex = 0;
-
-    async function updateCatalogue() {
-        fetch('/products/get?' + new URLSearchParams({
-            type: typeIndex,
-            advanced: advancedIndex,
-        }))
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById("products_list");
-                container.innerHTML = "";
-                for (const product of data) {
-                    container.innerHTML += '<div>';
-                    container.innerHTML += `<p>${product.title}</p>`;
-                    container.innerHTML += `<p>${product.description}</p>`;
-                    container.innerHTML += `<img src="${product.imageURL}" style="height: 400px; width: 400px; object-fit: cover;"/>`;
-                    container.innerHTML += `<p>${product.price}</p>`;
-                    container.innerHTML += `<a href="/product/${product.id}">Details</a>`;
-                    container.innerHTML += '</div>';
-                }
-            })
-            .catch(console.error);
-    }
-
-    for (const el of document.getElementsByClassName("type-radio")) {
-        el.onclick = (e) => {
-            typeIndex = e.target.value;
-            updateCatalogue();
-        }
-    }
-    for (const el of document.getElementsByClassName("advanced-radio")) {
-        el.onclick = (e) => {
-            advancedIndex = e.target.value;
-            updateCatalogue();
-        }
-    }
-</script>
+<script src="/js/catalogue.js"></script>
 </html>

@@ -1,15 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cart</title>
+    <link rel="stylesheet" href="/css/cart.css">
 </head>
 <body>
-<h1>Pich Application</h1>
-<div th:each="basketItem: ${baskets}">
-    <p th:text="'Title: ' + ${basketItem.product.title}"></p>
-    <p th:text="'Quantity: ' + ${basketItem.quantity}"></p>
+<header class="header">
+    <a href="/" class="logo">Pich</a>
+    <input class="side-menu" type="checkbox" id="side-menu"/>
+    <label class="hamb" for="side-menu"><span class="hamb-line"></span></label>
+    <nav class="nav">
+        <ul class="menu">
+            <li th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}"><a href="/admin">Admin Tools</a></li>
+            <li><a href="/catalogue">Catalogue</a></li>
+            <li><a href="/logout">Sign out</a></li>
+        </ul>
+    </nav>
+</header>
+<div class="product-top-panel">
+    <a href="/catalogue">
+        <div class="arrow-back"><img src="/img/arrow.png"></div>
+    </a>
+    <div class="product-title">Cart</div>
 </div>
-<a href="/cart/clear">Clear Cart</a>
+<div class="main-cart-content">
+    <div th:if="${baskets.empty}">Cart is still empty...</div>
+    <div class="product-item" th:each="basketItem: ${baskets}" th:attr="data-id=${basketItem.product.id}">
+        <div class="product-photo" th:style="@{'background-image: url(\'' + ${basketItem.product.imageURL} + '\');'}">
+        </div>
+        <div class="product-text">
+            <div class="product-name" th:text="${basketItem.product.title}"></div>
+            <div class="product-cart-pr-q-info">
+                <div class="product-price" th:text="'$' + ${basketItem.product.price}" th:attr="data-price=${basketItem.product.price}"></div>
+                <div class="product-quantity">
+                    <button class="increase-button">+</button>
+                    <input class="quantity-counter" type="number" th:value="${basketItem.quantity}" max="100" min="0"
+                           disabled>
+                    <button class="decrease-button">-</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bottom-cart-panel">
+    <div class="clear-cart-products">
+        <button id="clear-cart-button">Clear cart</button>
+    </div>
+    <div class="add-to-cart">
+        <a id="confirm-button" href="/create-order">Confirm</a>
+    </div>
+    <div class="cart-total-price" id="total-price">$0.0</div>
+</div>
 </body>
+<script src="/js/cart.js"></script>
 </html>

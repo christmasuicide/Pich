@@ -30,7 +30,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/products/add",
                             "/products/remove/**",
-                            "/orders"
+                            "/orders",
+                            "/admin"
                     ).hasAuthority(Permission.ADMIN.name())
                     .antMatchers("/cart",
                             "/cart/**",
@@ -38,7 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             "/product/**",
                             "/products/**",
                             "/products-image/**",
-                            "/create-order"
+                            "/create-order",
+                            "/successful-order"
                     ).authenticated()
                 .anyRequest().permitAll();
     }

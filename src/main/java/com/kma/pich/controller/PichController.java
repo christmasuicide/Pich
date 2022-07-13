@@ -65,11 +65,6 @@ public class PichController {
 
     @RequestMapping("/catalogue")
     public String catalogue(Model model) {
-        List<ProductCatalogueDto> products = productService.getAllProducts()
-                .stream()
-                .map(ProductCatalogueDto::new)
-                .collect(Collectors.toList());
-        model.addAttribute("products", products);
         return "catalogue";
     }
 
@@ -92,13 +87,36 @@ public class PichController {
     }
 
     @RequestMapping("/product/{id}")
-    public String getProduct(final Model model, @PathVariable(value = "id") Integer id) {
+    public String getProduct(final Model model, @PathVariable(value = "id") Integer id, Principal principal) {
+        if (!isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sign in for view products");
+        }
         ProductEntity product = productService.getProductById(id);
         if (product == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find product");
         }
-        model.addAttribute("product", new ProductDto(product));
-        return "product";
+        if (principal != null) {
+            String username = principal.getName();
+            Optional<UserEntity> myUser = userService.getUserByUsername(username);
+            if (myUser.isEmpty())
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sign in for adding to cart");
+            UserEntity user = myUser.get();
+            int quantity = 0;
+            double cost = 0.0;
+            List<BasketEntity> basketEntities = user.getBaskets();
+            for (BasketEntity basketEntity : basketEntities) {
+                if (basketEntity.getProduct().getId().equals(product.getId())) {
+                    quantity = basketEntity.getQuantity();
+                    cost = basketEntity.getProduct().getPrice() * quantity;
+                    break;
+                }
+            }
+            model.addAttribute("quantity", quantity);
+            model.addAttribute("cost", cost);
+            model.addAttribute("product", new ProductDto(product));
+            return "product";
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sign in for adding to cart");
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -202,8 +220,7 @@ public class PichController {
             orderEntity.setOrderCost(sum);
             orderService.createOrder(orderEntity);
             basketService.clearBasketByUser(user);
-            System.out.println("Total order price: " + sum);
-            return "successful_order";
+            return "redirect:/successful-order";
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sign in for adding to cart");
     }
@@ -218,6 +235,11 @@ public class PichController {
         return "order_list";
     }
 
+    @RequestMapping(value = "/successful-order", method = RequestMethod.GET)
+    public String successfulOrder() {
+        return "successful_order";
+    }
+
     private boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || AnonymousAuthenticationToken.class.
@@ -225,6 +247,11 @@ public class PichController {
             return false;
         }
         return authentication.isAuthenticated();
+    }
+
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+    public String admin() {
+        return "admin";
     }
 
 }

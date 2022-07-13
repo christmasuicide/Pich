@@ -46,7 +46,7 @@ public class ProductService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        productRepository.delete(productEntity);
+        productRepository.deleteById(productEntity.getId());
     }
 
 }

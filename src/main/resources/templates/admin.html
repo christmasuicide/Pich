@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<header class="header">
+    <a href="/" class="logo">Pich</a>
+    <input class="side-menu" type="checkbox" id="side-menu"/>
+    <label class="hamb" for="side-menu"><span class="hamb-line"></span></label>
+    <nav class="nav">
+        <ul class="menu">
+            <li><a href="/catalogue">Catalogue</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/logout">Sign out</a> </li>
+        </ul>
+    </nav>
+</header>
+<div class="product-top-panel">
+    <a href="/catalogue"><div class="arrow-back"><img src="/img/arrow.png" ></div></a>
+    <div class="product-title">Admin Panel</div>
+</div>
+<div class="admin-content">
+    <ul class="admin-list-pages">
+        <li><a href="/orders">Orders</a></li>
+        <li><a href="/products/add">Add product</a></li>
+    </ul>
+</div>
+</body>
+</html>
